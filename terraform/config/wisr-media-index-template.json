@@ -1,0 +1,492 @@
+{
+    "template": {
+        "settings": {
+            "index": {},
+            "analysis": {
+                "normalizer": {
+                    "lowercase_normalizer": {
+                        "type": "custom",
+                        "filter": ["lowercase"]
+                    }
+                }
+            }
+        },
+        "mappings": {
+            "dynamic": "strict",
+            "properties": {
+            "@timestamp": { "type": "date" },
+            "tenant_id": { "type": "keyword" },
+            "property": {
+                "properties": {
+                "id": { "type": "keyword" },
+                "name": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": { "type": "keyword", "normalizer": "lowercase_normalizer" }
+                    }
+                },
+                "location": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": { "type": "keyword", "normalizer": "lowercase_normalizer" }
+                    }
+                },
+                "timezone": { "type": "keyword" }
+                }
+            },
+            "media": {
+                "properties": {
+                "id": { "type": "keyword" },
+                "name": { "type": "keyword", "normalizer": "lowercase_normalizer" },
+                "title": {
+                    "type": "text",
+                    "fields": { "keyword": { "type": "keyword" } }
+                },
+                "description": {
+                    "type": "text",
+                    "fields": { "keyword": { "type": "keyword" } }
+                },
+                "type": { "type": "keyword" },
+                "capture_timestamp": { "type": "date" },
+                "capture_timestamp_local": { "type": "date" },
+                "upload_timestamp": { "type": "date" },
+                "upload_timestamp_local": { "type": "date" },
+                "upload_delay_ms": { "type": "long" },
+                "status": { "type": "keyword" }
+                }
+            },
+            "file": {
+                "properties": {
+                "size": { "type": "long" },
+                "width": { "type": "integer" },
+                "height": { "type": "integer" },
+                "megapixels": { "type": "float" },
+                "format": { "type": "keyword" },
+                "mime_type": { "type": "keyword" },
+                "duration": { "type": "float" },
+                "fps": { "type": "float" },
+                "codec": { "type": "keyword" },
+                "bitrate": { "type": "integer" }
+                }
+            },
+            "storage": {
+                "properties": {
+                "original": { "type": "keyword" },
+                "thumbnail": { "type": "keyword" },
+                "medium": { "type": "keyword" },
+                "processed": { "type": "keyword" },
+                "url": { "type": "keyword" },
+                "public_url": { "type": "keyword" }
+                }
+            },
+            "location": {
+                "properties": {
+                "coordinates": { "type": "geo_point" },
+                "accuracy": { "type": "keyword" },
+                "source": { "type": "keyword" },
+                "boundary_id": { "type": "keyword" }
+                }
+            },
+            "device": {
+                "properties": {
+                "id": { "type": "keyword" },
+                "name": {
+                    "type": "text",
+                    "fields": { "keyword": { "type": "keyword", "normalizer": "lowercase_normalizer" } }
+                },
+                "make": { "type": "keyword" },
+                "model": { "type": "keyword" },
+                "serial_number": { "type": "keyword" },
+                "status": {
+                    "properties": {
+                    "battery_level": { "type": "integer" },
+                    "signal_strength": { "type": "keyword" },
+                    "temperature": { "type": "float" },
+                    "storage_remaining": { "type": "keyword" }
+                    }
+                },
+                "settings": {
+                    "properties": {
+                    "mode": { "type": "keyword" },
+                    "sensitivity": { "type": "keyword" },
+                    "resolution": { "type": "keyword" }
+                    }
+                }
+                }
+            },
+            "trigger": {
+                "properties": {
+                "type": { "type": "keyword" },
+                "confidence": { "type": "float" },
+                "zone": { "type": "keyword" },
+                "detection_class": { "type": "keyword" },
+                "detection_details": { "type": "object", "enabled": false }
+                }
+            },
+            "ingestion": {
+                "properties": {
+                "method": { "type": "keyword" },
+                "source": {
+                    "properties": {
+                    "email": {
+                        "properties": {
+                        "from": { "type": "keyword" },
+                        "message_id": { "type": "keyword" },
+                        "sent_timestamp": { "type": "date" },
+                        "received_timestamp": { "type": "date" },
+                        "subject": { "type": "text" },
+                        "reception_delay_sec": { "type": "integer" }
+                        }
+                    },
+                    "ftp": { "type": "object", "enabled": false },
+                    "manual": { "type": "object", "enabled": false },
+                    "api": { "type": "object", "enabled": false }
+                    }
+                },
+                "timestamp": { "type": "date" },
+                "batch_id": { "type": "keyword" },
+                "uploaded_by": { "type": "keyword" },
+                "processing_time_ms": { "type": "integer" }
+                }
+            },
+            "related": {
+                "type": "nested",
+                "properties": {
+                "media_id": { "type": "keyword" },
+                "media_type": { "type": "keyword" },
+                "relationship": { "type": "keyword" },
+                "capture_timestamp": { "type": "date" }
+                }
+            },
+            "weather": {
+                "properties": {
+                "timestamp": { "type": "date" },
+                "temperature": { "type": "float" },
+                "feels_like": { "type": "float" },
+                "humidity": { "type": "integer" },
+                "dew_point": { "type": "float" },
+                "pressure": { "type": "integer" },
+                "wind_speed": { "type": "float" },
+                "wind_gust": { "type": "float" },
+                "wind_direction": { "type": "integer" },
+                "clouds": { "type": "integer" },
+                "visibility": { "type": "integer" },
+                "uvi": { "type": "float" },
+                "conditions": {
+                    "properties": {
+                    "id": { "type": "integer" },
+                    "main": { "type": "keyword" },
+                    "description": {
+                        "type": "text",
+                        "fields": { "keyword": { "type": "keyword" } }
+                    },
+                    "icon": { "type": "keyword" }
+                    }
+                },
+                "sunrise": { "type": "date" },
+                "sunset": { "type": "date" },
+                "source": { "type": "keyword" },
+                "request_timestamp": { "type": "date" }
+                }
+            },
+            "astronomical": {
+                "properties": {
+                "sun": {
+                    "properties": {
+                    "position": { "type": "keyword" },
+                    "altitude": { "type": "float" },
+                    "azimuth": { "type": "float" },
+                    "sunrise": { "type": "date" },
+                    "sunset": { "type": "date" }
+                    }
+                },
+                "moon": {
+                    "properties": {
+                    "phase": { "type": "keyword" },
+                    "illumination": { "type": "float" },
+                    "days_since_new_moon": { "type": "float" },
+                    "altitude": { "type": "float" },
+                    "azimuth": { "type": "float" },
+                    "distance": { "type": "float" },
+                    "moonrise": { "type": "date" },
+                    "moonset": { "type": "date" }
+                    }
+                },
+                "feeding": {
+                    "properties": {
+                    "major": {
+                        "type": "nested",
+                        "properties": {
+                        "start_timestamp": { "type": "date" },
+                        "end_timestamp": { "type": "date" }
+                        }
+                    },
+                    "minor": {
+                        "type": "nested",
+                        "properties": {
+                        "start_timestamp": { "type": "date" },
+                        "end_timestamp": { "type": "date" }
+                        }
+                    }
+                    }
+                },
+                "source": { "type": "keyword" },
+                "request_timestamp": { "type": "date" }
+                }
+            },
+            "detection": {
+                "properties": {
+                "objects": {
+                    "type": "nested",
+                    "properties": {
+                    "category": { "type": "keyword" },
+                    "class": { "type": "keyword" },
+                    "subclass": { "type": "keyword" },
+                    "confidence": { "type": "float" },
+                    "count": { "type": "integer" },
+                    "bounding_box": {
+                        "properties": {
+                        "x": { "type": "integer" },
+                        "y": { "type": "integer" },
+                        "width": { "type": "integer" },
+                        "height": { "type": "integer" }
+                        }
+                    },
+                    "tracking_id": { "type": "keyword" },
+                    "detection_id": { "type": "keyword" },
+                    "frame_number": { "type": "integer" },
+                    "appearance_timestamp": { "type": "date" },
+                    "disappearance_timestamp": { "type": "date" },
+                    "duration_ms": { "type": "long" },
+                    "motion": {
+                        "properties": {
+                        "direction": { "type": "keyword" },
+                        "speed": { "type": "float" },
+                        "is_stationary": { "type": "boolean" },
+                        "path": { "type": "geo_point" }
+                        }
+                    },
+                    "attributes": {
+                        "properties": {
+                        "color": { "type": "keyword" },
+                        "size": { "type": "keyword" },
+                        "action": { "type": "keyword" },
+                        "position": { "type": "keyword" },
+                        "occlusion": { "type": "float" },
+                        "blur": { "type": "float" },
+                        
+                        "species": { "type": "keyword" },
+                        "sex": { "type": "keyword" },
+                        "age": { "type": "keyword" },
+                        "lifestage": { "type": "keyword" },
+                        "antler_points": { "type": "integer" },
+                        "antler_spread": { "type": "float" },
+                        "body_condition": { "type": "keyword" },
+                        "distinctive_features": { "type": "keyword" },
+                        "behavior": { "type": "keyword" },
+                        "group_size": { "type": "integer" },
+                        "with_young": { "type": "boolean" },
+                        
+                        "gender": { "type": "keyword" },
+                        "age_range": { "type": "keyword" },
+                        "height": { "type": "keyword" },
+                        "build": { "type": "keyword" },
+                        "clothing": {
+                            "properties": {
+                            "upper_body": { "type": "keyword" },
+                            "lower_body": { "type": "keyword" },
+                            "headwear": { "type": "keyword" },
+                            "colors": { "type": "keyword" }
+                            }
+                        },
+                        "accessories": { "type": "keyword" },
+                        "carrying": { "type": "keyword" },
+                        "posture": { "type": "keyword" },
+                        "activity": { "type": "keyword" },
+                        
+                        "vehicle_type": { "type": "keyword" },
+                        "make": { "type": "keyword" },
+                        "model": { "type": "keyword" },
+                        "year_range": { "type": "keyword" },
+                        "license_plate": { "type": "keyword" },
+                        "state": { "type": "keyword" },
+                        "condition": { "type": "keyword" },
+                        "distinctive_marks": { "type": "keyword" },
+                        "wheels": { "type": "integer" },
+                        "doors": { "type": "integer" },
+                        "occupants": { "type": "integer" },
+                        "lights_on": { "type": "boolean" },
+                        "is_moving": { "type": "boolean" },
+                        "direction_of_travel": { "type": "keyword" }
+                        }
+                    },
+                    "identification": {
+                        "properties": {
+                        "name": { "type": "keyword" },
+                        "id": { "type": "keyword" },
+                        "confidence": { "type": "float" },
+                        "first_seen": { "type": "date" },
+                        "last_seen": { "type": "date" },
+                        "historical_matches": { "type": "integer" },
+                        "match_media_ids": { "type": "keyword" },
+                        "notes": { "type": "text" }
+                        }
+                    },
+                    "taxonomic": { "type": "keyword" },
+                    "relations": {
+                        "type": "nested",
+                        "properties": {
+                        "related_to": { "type": "keyword" },
+                        "relation_type": { "type": "keyword" },
+                        "confidence": { "type": "float" }
+                        }
+                    }
+                    }
+                },
+                "summary": {
+                    "properties": {
+                    "total_objects": { "type": "integer" },
+                    "empty_frame": { "type": "boolean" },
+                    "contains_wildlife": { "type": "boolean" },
+                    "contains_people": { "type": "boolean" },
+                    "contains_vehicles": { "type": "boolean" },
+                    "contains_other": { "type": "boolean" },
+                    "contains_known_individuals": { "type": "boolean" },
+                    "named_individuals": { "type": "keyword" },
+                    "object_counts": {
+                        "properties": {
+                        "wildlife": { "type": "integer" },
+                        "people": { "type": "integer" },
+                        "vehicles": { "type": "integer" },
+                        "other": { "type": "integer" }
+                        }
+                    },
+                    "class_distribution": {
+                        "properties": {
+                        "primary_class": { "type": "keyword" },
+                        "primary_confidence": { "type": "float" },
+                        "classes": { "type": "keyword" },
+                        "subclasses": { "type": "keyword" },
+                        "class_counts": { "type": "object", "enabled": false }
+                        }
+                    },
+                    "motion_summary": {
+                        "properties": {
+                        "predominant_direction": { "type": "keyword" },
+                        "activity_level": { "type": "keyword" },
+                        "entry_points": { "type": "keyword" },
+                        "exit_points": { "type": "keyword" }
+                        }
+                    },
+                    "scene_context": {
+                        "properties": {
+                        "time_of_day": { "type": "keyword" },
+                        "lighting_conditions": { "type": "keyword" },
+                        "weather_apparent": { "type": "keyword" },
+                        "terrain": { "type": "keyword" },
+                        "habitat": { "type": "keyword" },
+                        "is_feeding_area": { "type": "boolean" },
+                        "is_water_source": { "type": "boolean" },
+                        "is_trail": { "type": "boolean" },
+                        "is_road": { "type": "boolean" },
+                        "is_boundary": { "type": "boolean" }
+                        }
+                    }
+                    }
+                },
+                "event": {
+                    "properties": {
+                    "type": { "type": "keyword" },
+                    "confidence": { "type": "float" },
+                    "start_timestamp": { "type": "date" },
+                    "end_timestamp": { "type": "date" },
+                    "duration_ms": { "type": "long" },
+                    "primary_objects": { "type": "keyword" },
+                    "secondary_objects": { "type": "keyword" },
+                    "description": { "type": "text" },
+                    "significance": { "type": "keyword" }
+                    }
+                },
+                "processing": {
+                    "properties": {
+                    "model": { "type": "keyword" },
+                    "version": { "type": "keyword" },
+                    "processing_time_ms": { "type": "float" },
+                    "timestamp": { "type": "date" },
+                    "confidence_threshold": { "type": "float" },
+                    "processor_id": { "type": "keyword" },
+                    "batch_id": { "type": "keyword" },
+                    "models_used": { "type": "keyword" },
+                    "is_reprocessed": { "type": "boolean" },
+                    "parameters": { "type": "object", "enabled": false }
+                    }
+                }
+                }
+            },
+            "enrichment_processes": {
+                "type": "nested",
+                "properties": {
+                "process_id": { "type": "keyword" },
+                "type": { "type": "keyword" },
+                "status": { "type": "keyword" },
+                "started_timestamp": { "type": "date" },
+                "completed_timestamp": { "type": "date" },
+                "duration_ms": { "type": "long" },
+                "version": { "type": "keyword" },
+                "model": { "type": "keyword" },
+                "service": { "type": "keyword" },
+                "priority": { "type": "keyword" },
+                "errors": {
+                    "type": "text",
+                    "fields": { "keyword": { "type": "keyword" } }
+                },
+                "input_parameters": { "type": "object", "enabled": false },
+                "output_summary": { "type": "object", "enabled": false }
+                }
+            },
+            "user_metadata": {
+                "properties": {
+                "notes": { "type": "text" },
+                "rating": { "type": "integer" },
+                "is_favorite": { "type": "boolean" },
+                "is_hidden": { "type": "boolean" },
+                "is_archived": { "type": "boolean" },
+                "last_viewed_timestamp": { "type": "date" }
+                }
+            },
+            "tags": {
+                "properties": {
+                "system": { "type": "keyword" },
+                "user": { "type": "keyword" },
+                "ai": { "type": "keyword" }
+                }
+            },
+            "access": {
+                "properties": {
+                "visibility": { "type": "keyword" },
+                "shared_with": { "type": "keyword" },
+                "shared_links": { "type": "keyword" },
+                "expires_timestamp": { "type": "date" }
+                }
+            },
+            "system": {
+                "properties": {
+                "created_timestamp": { "type": "date" },
+                "created_by": { "type": "keyword" },
+                "updated_timestamp": { "type": "date" },
+                "updated_by": { "type": "keyword" },
+                "version": { "type": "integer" },
+                "processing_status": { "type": "keyword" },
+                "enrichment_status": {
+                    "properties": {
+                    "weather": { "type": "keyword" },
+                    "astronomical": { "type": "keyword" },
+                    "detection": { "type": "keyword" }
+                    }
+                }
+                }
+            }
+            }
+        }
+    }
+}

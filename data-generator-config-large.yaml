@@ -1,0 +1,405 @@
+# Large-scale configuration example for WISR media generator load testing
+# This configuration is designed to generate a large volume of test data
+
+# Tenants
+tenants:
+  # First tenant (Wildlife Research Organization)
+  - id: tenant-001
+    name: "Wildlife Research Organization"
+    properties:
+      # North Region Properties
+      - id: prop-001
+        name: "Blue Oak Reserve"
+        timezone: "America/Chicago"
+        devices:
+          - id: device-001-001
+            name: "Main Gate North"
+            make: "Axis"
+            model: "P1448-LE"
+            location: [-99.607781, 30.990075]
+            boundary_id: "bound-001"
+          
+          - id: device-001-002
+            name: "Main Gate South"
+            make: "Axis"
+            model: "P1448-LE"
+            location: [-99.607891, 30.990011]
+            boundary_id: "bound-001"
+          
+          - id: device-001-003
+            name: "East Feeder 1"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            location: [-99.612546, 30.988741]
+            boundary_id: "bound-002"
+          
+          - id: device-001-004
+            name: "East Feeder 2"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            location: [-99.612356, 30.988891]
+            boundary_id: "bound-002"
+          
+          - id: device-001-005
+            name: "Creek Crossing North"
+            make: "Reconyx"
+            model: "HyperFire 2"
+            location: [-99.604582, 30.985964]
+            boundary_id: "bound-003"
+          
+          - id: device-001-006
+            name: "Creek Crossing South"
+            make: "Reconyx"
+            model: "HyperFire 2"
+            location: [-99.604712, 30.985742]
+            boundary_id: "bound-003"
+          
+          - id: device-001-007
+            name: "North Trail 1"
+            make: "Browning"
+            model: "Strike Force Pro XD"
+            location: [-99.598712, 30.996843]
+            boundary_id: "bound-004"
+          
+          - id: device-001-008
+            name: "North Trail 2"
+            make: "Browning"
+            model: "Strike Force Pro XD"
+            location: [-99.598514, 30.997143]
+            boundary_id: "bound-004"
+          
+          - id: device-001-009
+            name: "Pond East"
+            make: "Stealth Cam"
+            model: "DS4K"
+            location: [-99.602111, 30.991345]
+            boundary_id: "bound-005"
+          
+          - id: device-001-010
+            name: "Pond West"
+            make: "Stealth Cam"
+            model: "DS4K"
+            location: [-99.603111, 30.991245]
+            boundary_id: "bound-005"
+
+      # South Region Properties
+      - id: prop-002
+        name: "Twin Creeks Ranch"
+        timezone: "America/Chicago"
+        devices:
+          - id: device-002-001
+            name: "Main Lodge"
+            make: "Axis"
+            model: "P1448-LE"
+            location: [-99.712341, 30.897654]
+            boundary_id: "bound-001"
+          
+          - id: device-002-002
+            name: "South Pond"
+            make: "Moultrie"
+            model: "M-50i"
+            location: [-99.723456, 30.876543]
+            boundary_id: "bound-002"
+          
+          - id: device-002-003
+            name: "East Creek"
+            make: "Reconyx"
+            model: "HyperFire 2"
+            location: [-99.705678, 30.886543]
+            boundary_id: "bound-003"
+          
+          - id: device-002-004
+            name: "West Creek"
+            make: "Reconyx"
+            model: "HyperFire 2"
+            location: [-99.725678, 30.886543]
+            boundary_id: "bound-003"
+          
+          - id: device-002-005
+            name: "Ridge Line"
+            make: "Browning"
+            model: "Strike Force Pro XD"
+            location: [-99.718765, 30.892345]
+            boundary_id: "bound-004"
+          
+          - id: device-002-006
+            name: "Valley View"
+            make: "Browning"
+            model: "Strike Force Pro XD"
+            location: [-99.714321, 30.883456]
+            boundary_id: "bound-004"
+          
+          - id: device-002-007
+            name: "North Feeder"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            location: [-99.712345, 30.899876]
+            boundary_id: "bound-005"
+          
+          - id: device-002-008
+            name: "South Feeder"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            location: [-99.712345, 30.879876]
+            boundary_id: "bound-005"
+          
+          - id: device-002-009
+            name: "East Blind"
+            make: "Stealth Cam"
+            model: "DS4K"
+            location: [-99.708765, 30.889876]
+            boundary_id: "bound-006"
+          
+          - id: device-002-010
+            name: "West Blind"
+            make: "Stealth Cam"
+            model: "DS4K"
+            location: [-99.718765, 30.889876]
+            boundary_id: "bound-006"
+
+  # Second tenant (Rio Grande Wildlife Management)
+  - id: tenant-002
+    name: "Rio Grande Wildlife Management"
+    properties:
+      - id: prop-003
+        name: "Rain Creek Ranch"
+        timezone: "America/Chicago"
+        devices:
+          - id: device-003-001
+            name: "Main Lodge"
+            make: "Axis"
+            model: "P1448-LE"
+            location: [-98.123456, 29.987654]
+            boundary_id: "bound-001"
+          
+          - id: device-003-002
+            name: "River Crossing East"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            location: [-98.129876, 29.983412]
+            boundary_id: "bound-002"
+          
+          - id: device-003-003
+            name: "River Crossing West"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            location: [-98.131234, 29.983511]
+            boundary_id: "bound-002"
+          
+          - id: device-003-004
+            name: "North Field"
+            make: "Reconyx"
+            model: "HyperFire 2"
+            location: [-98.126543, 29.991234]
+            boundary_id: "bound-003"
+          
+          - id: device-003-005
+            name: "South Field"
+            make: "Reconyx"
+            model: "HyperFire 2"
+            location: [-98.126543, 29.981234]
+            boundary_id: "bound-003"
+          
+          - id: device-003-006
+            name: "East Feeder"
+            make: "Moultrie"
+            model: "M-50i"
+            location: [-98.121234, 29.986789]
+            boundary_id: "bound-004"
+          
+          - id: device-003-007
+            name: "West Feeder"
+            make: "Moultrie"
+            model: "M-50i"
+            location: [-98.131234, 29.986789]
+            boundary_id: "bound-004"
+          
+          - id: device-003-008
+            name: "Ridge Trail"
+            make: "Browning"
+            model: "Strike Force Pro XD"
+            location: [-98.126543, 29.987654]
+            boundary_id: "bound-005"
+          
+          - id: device-003-009
+            name: "Valley Trail"
+            make: "Browning"
+            model: "Strike Force Pro XD"
+            location: [-98.127654, 29.985432]
+            boundary_id: "bound-005"
+          
+          - id: device-003-010
+            name: "Pond Camera"
+            make: "Stealth Cam"
+            model: "DS4K"
+            location: [-98.125432, 29.989876]
+            boundary_id: "bound-006"
+
+      - id: prop-004
+        name: "Mesa Grande"
+        timezone: "America/Chicago"
+        devices:
+          - id: device-004-001
+            name: "Main Entrance"
+            make: "Axis"
+            model: "P1448-LE"
+            location: [-98.223456, 29.887654]
+            boundary_id: "bound-001"
+          
+          - id: device-004-002
+            name: "Northeast Corner"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            location: [-98.219876, 29.893412]
+            boundary_id: "bound-002"
+          
+          - id: device-004-003
+            name: "Southeast Corner"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            location: [-98.219876, 29.883412]
+            boundary_id: "bound-002"
+          
+          - id: device-004-004
+            name: "Northwest Corner"
+            make: "Reconyx"
+            model: "HyperFire 2"
+            location: [-98.231234, 29.893412]
+            boundary_id: "bound-003"
+          
+          - id: device-004-005
+            name: "Southwest Corner"
+            make: "Reconyx"
+            model: "HyperFire 2"
+            location: [-98.231234, 29.883412]
+            boundary_id: "bound-003"
+          
+          - id: device-004-006
+            name: "Central Feeder"
+            make: "Moultrie"
+            model: "M-50i"
+            location: [-98.225432, 29.889876]
+            boundary_id: "bound-004"
+          
+          - id: device-004-007
+            name: "East Feeder"
+            make: "Moultrie"
+            model: "M-50i"
+            location: [-98.221234, 29.889876]
+            boundary_id: "bound-004"
+          
+          - id: device-004-008
+            name: "West Feeder"
+            make: "Moultrie"
+            model: "M-50i"
+            location: [-98.229876, 29.889876]
+            boundary_id: "bound-004"
+          
+          - id: device-004-009
+            name: "Creek Bend"
+            make: "Browning"
+            model: "Strike Force Pro XD"
+            location: [-98.225432, 29.886789]
+            boundary_id: "bound-005"
+          
+          - id: device-004-010
+            name: "Water Hole"
+            make: "Stealth Cam"
+            model: "DS4K"
+            location: [-98.227654, 29.892345]
+            boundary_id: "bound-006"
+
+  # Third tenant (Conservation Research Institute)
+  - id: tenant-003
+    name: "Conservation Research Institute"
+    properties:
+      - id: prop-005
+        name: "Pinyon Research Area"
+        timezone: "America/Denver"
+        devices:
+          - id: device-005-001
+            name: "Base Station"
+            make: "Axis"
+            model: "P1448-LE"
+            location: [-106.123456, 39.987654]
+            boundary_id: "bound-001"
+          
+          - id: device-005-002
+            name: "Transect 1 North"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            location: [-106.119876, 39.993412]
+            boundary_id: "bound-002"
+          
+          - id: device-005-003
+            name: "Transect 1 South"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            location: [-106.119876, 39.983412]
+            boundary_id: "bound-002"
+          
+          - id: device-005-004
+            name: "Transect 2 East"
+            make: "Reconyx"
+            model: "HyperFire 2"
+            location: [-106.115432, 39.989876]
+            boundary_id: "bound-003"
+          
+          - id: device-005-005
+            name: "Transect 2 West"
+            make: "Reconyx"
+            model: "HyperFire 2"
+            location: [-106.125432, 39.989876]
+            boundary_id: "bound-003"
+          
+          - id: device-005-006
+            name: "Ridge Site"
+            make: "Moultrie"
+            model: "M-50i"
+            location: [-106.122345, 39.995432]
+            boundary_id: "bound-004"
+          
+          - id: device-005-007
+            name: "Valley Site"
+            make: "Moultrie"
+            model: "M-50i"
+            location: [-106.122345, 39.985432]
+            boundary_id: "bound-004"
+          
+          - id: device-005-008
+            name: "Stream Crossing"
+            make: "Browning"
+            model: "Strike Force Pro XD"
+            location: [-106.119876, 39.987654]
+            boundary_id: "bound-005"
+          
+          - id: device-005-009
+            name: "Forest Edge"
+            make: "Browning"
+            model: "Strike Force Pro XD"
+            location: [-106.125432, 39.992345]
+            boundary_id: "bound-005"
+          
+          - id: device-005-010
+            name: "Meadow Center"
+            make: "Stealth Cam"
+            model: "DS4K"
+            location: [-106.122345, 39.989876]
+            boundary_id: "bound-006"
+
+# Media count settings - can be a fixed number or a range
+# For load testing, generate 50-100 items per device (potentially 1500+ total records)
+media_count_per_device:
+  min: 5000
+  max: 100000
+
+# Date range for media generation
+date_range:
+  days_back: 365  # Generate media from 90 days ago until now
+
+# Elasticsearch settings
+elasticsearch:
+  use_api_key: true
+  verify_ssl: true
+  index_prefix: "wisr-media"
+  # endpoint, api_key/username/password should be specified on command line

@@ -1,0 +1,106 @@
+# Example configuration for WISR media generator
+# This file defines tenants, properties, devices, and media count settings
+
+# Tenants
+tenants:
+  # First tenant
+  - id: tenant-001
+    name: "Wildlife Conservation Foundation"
+    properties:
+      # Property 1
+      - id: prop-001
+        name: "Rain Creek Ranch"
+        timezone: "America/Chicago"
+        devices:
+          - id: device-001
+            name: "Main Gate Camera"
+            make: "Axis"
+            model: "P1448-LE"
+            serial_number: "ACCC8E123456"
+            location: [-99.607781, 30.990075]
+            boundary_id: "bound-001"
+          
+          - id: device-002
+            name: "East Feeder"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            serial_number: "BTC12345678"
+            location: [-99.612546, 30.988741]
+            boundary_id: "bound-001"
+          
+          - id: device-003
+            name: "Creek Crossing"
+            make: "Reconyx"
+            model: "HyperFire 2"
+            serial_number: "RX7895642"
+            location: [-99.604582, 30.985964]
+            boundary_id: "bound-002"
+          
+          - id: device-004
+            name: "North Boundary Trail"
+            make: "Browning"
+            model: "Strike Force Pro XD"
+            serial_number: "BR4567891"
+            location: [-99.598712, 30.996843]
+            boundary_id: "bound-003"
+      
+      # Property 2
+      - id: prop-002
+        name: "Blue Oak Reserve"
+        timezone: "America/Chicago"
+        devices:
+          - id: device-005
+            name: "Main Food Plot"
+            make: "Stealth Cam"
+            model: "DS4K"
+            serial_number: "SC9876543"
+            location: [-99.512341, 30.897654]
+            boundary_id: "bound-005"
+          
+          - id: device-006
+            name: "South Pond"
+            make: "Moultrie"
+            model: "M-50i"
+            serial_number: "MO5643210"
+            location: [-99.523456, 30.876543]
+            boundary_id: "bound-005"
+  
+  # Second tenant
+  - id: tenant-002
+    name: "Rio Grande Hunting Club"
+    properties:
+      - id: prop-003
+        name: "Eagle Ridge Farm"
+        timezone: "America/Chicago"
+        devices:
+          - id: device-007
+            name: "Main Lodge"
+            make: "Axis"
+            model: "P1448-LE"
+            serial_number: "ACCC8E654321"
+            location: [-98.123456, 29.987654]
+            boundary_id: "bound-001"
+          
+          - id: device-008
+            name: "River Crossing"
+            make: "Bushnell"
+            model: "Trophy Cam HD"
+            serial_number: "BTC87654321"
+            location: [-98.129876, 29.983412]
+            boundary_id: "bound-002"
+
+# Media count settings - can be a fixed number or a range
+media_count_per_device:
+  min: 5
+  max: 15
+
+# Date range for media generation
+date_range:
+  days_back: 30  # Generate media from 30 days ago until now
+
+# Elasticsearch settings
+elasticsearch:
+  use_api_key: true
+  verify_ssl: true
+  index_prefix: "wisr-media"
+  # endpoint, api_key/username/password should be specified on command line or via environment variables

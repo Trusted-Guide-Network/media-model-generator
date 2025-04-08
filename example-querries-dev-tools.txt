@@ -1,0 +1,1027 @@
+# Sample querries to solve various usescase
+# Basic search for all documents
+GET wisr-media-*/_search
+{
+  "size": 5,
+  "query": {
+    "match_all": {}
+  }
+}
+
+# Search by media type (updated field path)
+GET wisr-media-*/_search
+{
+  "query": {
+    "term": {
+      "media.type": "video"
+    }
+  }
+}
+
+# Search by date range (updated field path)
+GET wisr-media-*/_search
+{
+  "query": {
+    "range": {
+      "media.capture_timestamp": {
+        "gte": "now-30d/d",
+        "lte": "now"
+      }
+    }
+  }
+}
+
+# Search for specific animal detections
+GET wisr-media-*/_search
+{
+  "query": {
+    "nested": {
+      "path": "detection.objects",
+      "query": {
+        "term": {
+          "detection.objects.class": "deer"
+        }
+      }
+    }
+  }
+}
+
+# Search using system tags
+GET wisr-media-*/_search
+{
+  "query": {
+    "term": {
+      "tags.system": "deer"
+    }
+  }
+}
+
+# Search for specific weather conditions
+GET wisr-media-*/_search
+{
+  "query": {
+    "term": {
+      "weather.conditions.main": "Clear"
+    }
+  }
+}
+
+# Search by time of day
+GET wisr-media-*/_search
+{
+  "query": {
+    "terms": {
+      "astronomical.sun.position": ["dawn", "dusk"]
+    }
+  }
+}
+
+# Combined query - high confidence deer detections during dawn
+GET wisr-media-*/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "nested": {
+            "path": "detection.objects",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "term": {
+                      "detection.objects.class": "deer"
+                    }
+                  },
+                  {
+                    "range": {
+                      "detection.objects.confidence": {
+                        "gte": 0.7
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "term": {
+            "astronomical.sun.position": "night"
+          }
+        }
+      ]
+    }
+  }
+}
+
+# Find media with specific user tags
+GET wisr-media-*/_search
+{
+  "query": {
+    "terms": {
+      "tags.user": ["good-photo", "favorite"]
+    }
+  }
+}
+
+# Aggregate detections by class
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "aggs": {
+    "detection_classes": {
+      "nested": {
+        "path": "detection.objects"
+      },
+      "aggs": {
+        "by_class": {
+          "terms": {
+            "field": "detection.objects.class"
+          }
+        }
+      }
+    }
+  }
+}
+
+# Average temperature by time of day
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "aggs": {
+    "by_time_of_day": {
+      "terms": {
+        "field": "astronomical.sun.position"
+      },
+      "aggs": {
+        "avg_temp": {
+          "avg": {
+            "field": "weather.temperature"
+          }
+        }
+      }
+    }
+  }
+}
+
+# Camera detection counts
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "aggs": {
+    "by_device": {
+      "terms": {
+        "field": "device.name.keyword",
+        "size": 10
+      },
+      "aggs": {
+        "detection_count": {
+          "filter": {
+            "bool": {
+              "must_not": {
+                "term": {
+                  "detection.summary.empty_frame": true
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# Geospatial query - media near a specific location
+GET wisr-media-*/_search
+{
+  "query": {
+    "geo_distance": {
+      "distance": "1km",
+      "location.coordinates": [-99.607781, 30.990075]
+    }
+  }
+}
+
+# Complex combined query with sorting (updated field paths)
+GET wisr-media-*/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "range": {
+            "media.capture_timestamp": {
+              "gte": "now-30d/d",
+              "lte": "now"
+            }
+          }
+        },
+        {
+          "bool": {
+            "should": [
+              {
+                "nested": {
+                  "path": "detection.objects",
+                  "query": {
+                    "term": {
+                      "detection.objects.class": "deer"
+                    }
+                  }
+                }
+              },
+              {
+                "nested": {
+                  "path": "detection.objects",
+                  "query": {
+                    "term": {
+                      "detection.objects.class": "coyote"
+                    }
+                  }
+                }
+              }
+            ],
+            "minimum_should_match": 2
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "media.type": "image"
+          }
+        }
+      ]
+    }
+  },
+  "sort": [
+    {
+      "user_metadata.rating": {
+        "order": "desc"
+      }
+    },
+    {
+      "media.capture_timestamp": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+
+# Complex query finding media containing both deer and turkey
+GET wisr-media-*/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "range": {
+            "media.capture_timestamp": {
+              "gte": "now-14d/d",
+              "lte": "now"
+            }
+          }
+        },
+        {
+          "bool": {
+            "must": [
+              {
+                "nested": {
+                  "path": "detection.objects",
+                  "query": {
+                    "term": {
+                      "detection.objects.class": "deer"
+                    }
+                  }
+                }
+              },
+              {
+                "nested": {
+                  "path": "detection.objects",
+                  "query": {
+                    "term": {
+                      "detection.objects.class": "turkey"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "media.type": "image"
+          }
+        }
+      ]
+    }
+  },
+  "sort": [
+    {
+      "user_metadata.rating": {
+        "order": "desc"
+      }
+    },
+    {
+      "media.capture_timestamp": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+
+
+# Find bucks with large antlers (8+ points)
+GET wisr-media-*/_search
+{
+  "query": {
+    "nested": {
+      "path": "detection.objects",
+      "query": {
+        "bool": {
+          "must": [
+            { "term": { "detection.objects.class": "deer" }},
+            { "term": { "detection.objects.attributes.sex": "buck" }},
+            { "range": { "detection.objects.attributes.antler_points": { "gte": 8 }}}
+          ]
+        }
+      }
+    }
+  },
+  "sort": [
+    { "detection.summary.class_distribution.primary_confidence": { "order": "desc" }}
+  ]
+}
+
+# Find people carrying weapons during dawn or dusk
+GET wisr-media-*/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "nested": {
+            "path": "detection.objects",
+            "query": {
+              "bool": {
+                "must": [
+                  { "term": { "detection.objects.class": "person" }},
+                  { "term": { "detection.objects.attributes.carrying": "weapon" }}
+                ]
+              }
+            }
+          }
+        },
+        {
+          "terms": {
+            "astronomical.sun.position": ["dawn", "night"]
+          }
+        }
+      ]
+    }
+  }
+}
+
+# Find vehicles with license plates detected
+GET wisr-media-*/_search
+{
+  "query": {
+    "nested": {
+      "path": "detection.objects",
+      "query": {
+        "bool": {
+          "must": [
+            { "term": { "detection.objects.class": "vehicle" }},
+            { "exists": { "field": "detection.objects.attributes.license_plate" }}
+          ]
+        }
+      }
+    }
+  }
+}
+
+# Find all media containing known/identified individuals
+GET wisr-media-*/_search
+{
+  "query": {
+    "term": {
+      "detection.summary.contains_known_individuals": true
+    }
+  },
+  "sort": [
+    { "media.capture_timestamp": { "order": "desc" }}
+  ]
+}
+
+# Find specific named animal across multiple captures
+GET wisr-media-*/_search
+{
+  "query": {
+    "nested": {
+      "path": "detection.objects",
+      "query": {
+        "match": {
+          "detection.objects.identification.name": "Prowler"
+        }
+      }
+    }
+  },
+  "sort": [{ "media.capture_timestamp": {"order": "desc" }}]
+}
+
+# Enrichment process tracking - find media with failed weather enrichment
+GET wisr-media-*/_search
+{
+  "query": {
+    "nested": {
+      "path": "enrichment_processes",
+      "query": {
+        "bool": {
+          "must": [
+            { "term": { "enrichment_processes.type": "weather" }},
+            { "term": { "enrichment_processes.status": "failed" }}
+          ]
+        }
+      }
+    }
+  }
+}
+
+# Find detection processing time statistics by detection type
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "aggs": {
+    "by_class": {
+      "terms": {
+        "field": "detection.summary.class_distribution.primary_class"
+      },
+      "aggs": {
+        "avg_processing_time": {
+          "avg": {
+            "field": "detection.processing.processing_time_ms"
+          }
+        },
+        "max_processing_time": {
+          "max": {
+            "field": "detection.processing.processing_time_ms"
+          }
+        },
+        "min_processing_time": {
+          "min": {
+            "field": "detection.processing.processing_time_ms"
+          }
+        }
+      }
+    }
+  }
+}
+
+# Group media by environmental context - find wildlife activity by habitat types
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "query": {
+    "term": {
+      "detection.summary.contains_wildlife": true
+    }
+  },
+  "aggs": {
+    "by_habitat": {
+      "terms": {
+        "field": "detection.summary.scene_context.habitat"
+      },
+      "aggs": {
+        "by_wildlife_class": {
+          "nested": {
+            "path": "detection.objects"
+          },
+          "aggs": {
+            "wildlife_only": {
+              "filter": {
+                "terms": {
+                  "detection.objects.class": ["deer", "turkey", "coyote", "boar", "bobcat"]
+                }
+              },
+              "aggs": {
+                "by_class": {
+                  "terms": {
+                    "field": "detection.objects.class"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# Analyze wildlife behavior patterns by time of day and weather conditions
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "query": {
+    "nested": {
+      "path": "detection.objects",
+      "query": {
+        "term": {
+          "detection.objects.class": "deer"
+        }
+      }
+    }
+  },
+  "aggs": {
+    "by_time_of_day": {
+      "terms": {
+        "field": "astronomical.sun.position"
+      },
+      "aggs": {
+        "deer_behaviors": {
+          "nested": {
+            "path": "detection.objects"
+          },
+          "aggs": {
+            "deer_only": {
+              "filter": {
+                "term": {
+                  "detection.objects.class": "deer"
+                }
+              },
+              "aggs": {
+                "by_behavior": {
+                  "terms": {
+                    "field": "detection.objects.attributes.action"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "by_weather": {
+          "terms": {
+            "field": "weather.conditions.main"
+          }
+        }
+      }
+    }
+  }
+}
+
+# Find media containing specific mixed detections (wildlife and vehicles)
+GET wisr-media-*/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "term": { "detection.summary.contains_wildlife": true }},
+        { "term": { "detection.summary.contains_vehicles": true }}
+      ]
+    }
+  },
+  "sort": [
+    { "media.capture_timestamp": { "order": "desc" }}
+  ]
+}
+
+# Find and analyze detected events in videos
+GET wisr-media-*/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "term": { "media.type": "video" }},
+        { "exists": { "field": "detection.event" }}
+      ]
+    }
+  },
+  "aggs": {
+    "by_event_type": {
+      "terms": {
+        "field": "detection.event.type"
+      },
+      "aggs": {
+        "avg_duration": {
+          "avg": {
+            "field": "detection.event.duration_ms"
+          }
+        },
+        "by_significance": {
+          "terms": {
+            "field": "detection.event.significance"
+          }
+        }
+      }
+    }
+  }
+}
+
+# Find motion patterns of animals at water sources
+GET wisr-media-*/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "term": { "detection.summary.scene_context.is_water_source": true }},
+        {
+          "nested": {
+            "path": "detection.objects",
+            "query": {
+              "exists": {
+                "field": "detection.objects.motion"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "movement_patterns": {
+      "nested": {
+        "path": "detection.objects"
+      },
+      "aggs": {
+        "by_direction": {
+          "terms": {
+            "field": "detection.objects.motion.direction"
+          }
+        },
+        "avg_speed": {
+          "avg": {
+            "field": "detection.objects.motion.speed"
+          }
+        }
+      }
+    }
+  }
+}
+
+# Track unique animal identifications over time (fixed)
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "query": {
+    "nested": {
+      "path": "detection.objects",
+      "query": {
+        "exists": {
+          "field": "detection.objects.identification.name"
+        }
+      }
+    }
+  },
+  "aggs": {
+    "by_object": {
+      "nested": {
+        "path": "detection.objects"
+      },
+      "aggs": {
+        "with_identification": {
+          "filter": {
+            "exists": {
+              "field": "detection.objects.identification.name"
+            }
+          },
+          "aggs": {
+            "unique_animals": {
+              "terms": {
+                "field": "detection.objects.identification.id",
+                "size": 50
+              },
+              "aggs": {
+                "animal_name": {
+                  "terms": {
+                    "field": "detection.objects.identification.name"
+                  }
+                },
+                "earliest_sighting": {
+                  "min": {
+                    "field": "detection.objects.identification.first_seen"
+                  }
+                },
+                "latest_sighting": {
+                  "max": {
+                    "field": "detection.objects.identification.last_seen"
+                  }
+                },
+                "sighting_count": {
+                  "avg": {
+                    "field": "detection.objects.identification.historical_matches"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# Finds a named animal with count by device with histogram of sightings by time of day, weather condition, and the first and last sighting times
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "query": {
+    "nested": {
+      "path": "detection.objects",
+      "query": {
+        "match": {
+          "detection.objects.identification.name": "Prowler"
+        }
+      }
+    }
+  },
+  "aggs": {
+    "by_device": {
+      "terms": {
+        "field": "device.name.keyword",
+        "size": 20
+      },
+      "aggs": {
+        "by_date": {
+          "date_histogram": {
+            "field": "media.capture_timestamp",
+            "calendar_interval": "day"
+          }
+        },
+        "by_time_of_day": {
+          "terms": {
+            "field": "astronomical.sun.position",
+            "size": 4
+          }
+        },
+        "by_weather": {
+          "terms": {
+            "field": "weather.conditions.main",
+            "size": 5
+          }
+        },
+        "earliest_sighting": {
+          "min": {
+            "field": "media.capture_timestamp"
+          }
+        },
+        "latest_sighting": {
+          "max": {
+            "field": "media.capture_timestamp"
+          }
+        },
+        "sample_media": {
+          "top_hits": {
+            "size": 1,
+            "sort": [
+              {
+                "media.capture_timestamp": {
+                  "order": "desc"
+                }
+              }
+            ],
+            "_source": {
+              "includes": ["media.id", "media.capture_timestamp", "storage.url"]
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# The number of times we have seen a named animal and the sorted by by count with first and last seen timestamps
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "aggs": {
+    "named_animals": {
+      "nested": {
+        "path": "detection.objects"
+      },
+      "aggs": {
+        "has_name": {
+          "filter": {
+            "exists": {
+              "field": "detection.objects.identification.name"
+            }
+          },
+          "aggs": {
+            "animal_names": {
+              "terms": {
+                "field": "detection.objects.identification.name",
+                "size": 100,
+                "order": {
+                  "_count": "desc"
+                }
+              },
+              "aggs": {
+                "first_seen": {
+                  "min": {
+                    "field": "detection.objects.identification.first_seen"
+                  }
+                },
+                "last_seen": {
+                  "max": {
+                    "field": "detection.objects.identification.last_seen"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# Number of sightings of named objects by device
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "aggs": {
+    "devices": {
+      "terms": {
+        "field": "device.id",
+        "size": 100,
+        "order": {
+          "_key": "asc"
+        }
+      },
+      "aggs": {
+        "device_name": {
+          "terms": {
+            "field": "device.name.keyword",
+            "size": 1
+          }
+        },
+        "named_animals": {
+          "nested": {
+            "path": "detection.objects"
+          },
+          "aggs": {
+            "has_name": {
+              "filter": {
+                "exists": {
+                  "field": "detection.objects.identification.name"
+                }
+              },
+              "aggs": {
+                "animal_names": {
+                  "terms": {
+                    "field": "detection.objects.identification.name",
+                    "size": 100,
+                    "order": {
+                      "_count": "desc"
+                    }
+                  },
+                  "aggs": {
+                    "first_seen": {
+                      "min": {
+                        "field": "detection.objects.identification.first_seen"
+                      }
+                    },
+                    "last_seen": {
+                      "max": {
+                        "field": "detection.objects.identification.last_seen"
+                      }
+                    },
+                    "species": {
+                      "terms": {
+                        "field": "detection.objects.attributes.species",
+                        "size": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# This query specifically targets devices that haven't uploaded images recently. 
+#
+# Groups results by device.id to get statistics for each device
+# Orders the devices by their last upload timestamp (ascending), so devices with the oldest uploads (or no recent uploads) appear first
+# For each device, it calculates:
+#  - The device name for easier identification
+#  - The timestamp of the most recent upload
+#  - The number of days that have passed since the last upload
+#  - The total number of uploads from that device
+#  - Details about the most recent media from that device
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "aggs": {
+    "devices": {
+      "terms": {
+        "field": "device.id",
+        "size": 1000,
+        "order": {
+          "last_upload.value": "asc"
+        }
+      },
+      "aggs": {
+        "device_name": {
+          "terms": {
+            "field": "device.name.keyword",
+            "size": 1
+          }
+        },
+        "last_upload": {
+          "max": {
+            "field": "media.upload_timestamp"
+          }
+        },
+        "days_since_last_upload": {
+          "bucket_script": {
+            "buckets_path": {
+              "last_upload": "last_upload.value"
+            },
+            "script": "params.last_upload == null ? null : (System.currentTimeMillis() - params.last_upload) / 86400000"
+          }
+        },
+        "total_uploads": {
+          "value_count": {
+            "field": "media.id"
+          }
+        },
+        "last_media": {
+          "top_hits": {
+            "size": 1,
+            "sort": [
+              {
+                "media.upload_timestamp": {
+                  "order": "desc"
+                }
+              }
+            ],
+            "_source": {
+              "includes": [
+                "media.id",
+                "media.upload_timestamp",
+                "media.capture_timestamp",
+                "property.id",
+                "property.name.keyword"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# Count by Category of detected Objects
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "aggs": {
+    "detection_categories": {
+      "nested": {
+        "path": "detection.objects"
+      },
+      "aggs": {
+        "categories": {
+          "terms": {
+            "field": "detection.objects.category"
+          }
+        }
+      }
+    }
+  }
+}
+
+# Count of object classes within each Category
+GET wisr-media-*/_search
+{
+  "size": 0,
+  "aggs": {
+    "detection_categories": {
+      "nested": {
+        "path": "detection.objects"
+      },
+      "aggs": {
+        "categories": {
+          "terms": {
+            "field": "detection.objects.category",
+            "size": 10
+          },
+          "aggs": {
+            "classes": {
+              "terms": {
+                "field": "detection.objects.class",
+                "size": 20
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
